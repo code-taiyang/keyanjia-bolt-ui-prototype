@@ -110,19 +110,22 @@ export function Sidebar() {
       icon: <Database size={20} />,
       label: "数据集",
       to: "/resources/datasets",
-      badge: "32"
+      badge: "32",
+      active: location.pathname.startsWith("/resources/datasets")
     },
     {
       icon: <BookMarked size={20} />,
       label: "文献库",
       to: "/resources/papers",
-      badge: "484"
+      badge: "484",
+      active: location.pathname === "/resources/papers"
     },
     {
       icon: <Brain size={20} />,
       label: "模型库",
       to: "/resources/models",
-      badge: "30"
+      badge: "30",
+      active: location.pathname === "/resources/models"
     }
   ];
 
@@ -130,7 +133,8 @@ export function Sidebar() {
     { 
       icon: <Settings size={20} />, 
       label: "设置",
-      to: "/settings"
+      to: "/settings",
+      active: location.pathname.startsWith("/settings")
     }
   ];
 
