@@ -1,18 +1,20 @@
 import React from 'react';
 import { MessageSquare, Bot } from 'lucide-react';
 
-interface MessageProps {
-  message: {
-    id: string;
-    content: string;
-    type: 'user' | 'assistant';
-    timestamp: string;
-    metadata?: {
-      type?: 'analysis';
-      stage?: string;
-      progress?: number;
-    };
+interface Message {
+  id: string;
+  content: string;
+  type: 'user' | 'assistant';
+  timestamp: Date;
+  metadata?: {
+    type?: 'analysis';
+    stage?: string;
+    progress?: number;
   };
+}
+
+interface MessageProps {
+  message: Message;
 }
 
 export function Message({ message }: MessageProps) {
@@ -56,7 +58,7 @@ export function Message({ message }: MessageProps) {
         </div>
 
         <div className="text-xs text-gray-400 mt-1">
-          {new Date(message.timestamp).toLocaleTimeString()}
+          {message.timestamp.toLocaleTimeString()}
         </div>
       </div>
     </div>

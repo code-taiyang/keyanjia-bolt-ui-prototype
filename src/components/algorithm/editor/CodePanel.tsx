@@ -1,6 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play } from 'lucide-react';
 import Editor from "@monaco-editor/react";
+import { loader } from '@monaco-editor/react';
+
+// Configure Monaco Editor's CDN path
+loader.config({ 
+  paths: {
+    vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs'
+  }
+});
 
 interface CodePanelProps {
   selectedFile: string | null;
@@ -107,8 +115,7 @@ class TransformerAttention:
               <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent"></div>
             </div>
           }
-          onMount={(editor, monaco) => {
-            // Configure Monaco editor on mount
+          beforeMount={(monaco) => {
             monaco.editor.defineTheme('custom-theme', {
               base: 'vs',
               inherit: true,

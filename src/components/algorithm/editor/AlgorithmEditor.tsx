@@ -16,18 +16,22 @@ export function AlgorithmEditor() {
   const [showResults, setShowResults] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  console.log('Editor location state:', location.state);
 
   useEffect(() => {
-    if (!location.state?.algorithmId) {
+    if (!location.state?.algorithmId && !location.state?.fileId) {
+      console.log('No algorithm or file ID found, redirecting to algorithm tools');
       navigate('/tools/algorithm');
     }
   }, [location.state, navigate]);
 
   useEffect(() => {
     const algorithmInfo = localStorage.getItem('algorithm_info');
+    console.log('Retrieved algorithm info:', algorithmInfo);
     if (algorithmInfo) {
       try {
         const { description, algorithmId } = JSON.parse(algorithmInfo);
+        console.log('Parsed algorithm info:', { description, algorithmId });
         if (description) {
           setProjectName(description.replace('正在分析论文: ', '').replace('.pdf', ''));
         }

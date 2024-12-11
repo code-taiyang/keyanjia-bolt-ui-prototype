@@ -12,11 +12,13 @@ export function AlgorithmTabs({ activeTab, onTabChange }: AlgorithmTabsProps) {
       id: 'upload' as const,
       label: '上传论文',
       icon: <FileText size={18} />,
+ 
     },
     {
       id: 'select' as const,
       label: '选择算法',
       icon: <Code size={18} />,
+     
     }
   ];
 
