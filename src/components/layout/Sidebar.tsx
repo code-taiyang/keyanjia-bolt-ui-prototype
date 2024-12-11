@@ -77,7 +77,8 @@ export function Sidebar() {
       icon: <Calculator size={20} />, 
       label: "算法助手",
       to: "/tools/algorithm",
-      active: location.pathname === "/tools/algorithm"
+      active: location.pathname === "/tools/algorithm",
+      badge: "New"
     },
     { 
       icon: <Code2 size={20} />, 

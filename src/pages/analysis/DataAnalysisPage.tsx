@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Brain, Upload, ArrowRight, X } from 'lucide-react';
+import { Brain, Upload, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export function DataAnalysisPage() {
+  const navigate = useNavigate();
   const [files, setFiles] = useState<File[]>([]);
   const [objective, setObjective] = useState('');
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -38,11 +39,20 @@ export function DataAnalysisPage() {
 
   const handleStartAnalysis = () => {
     if (!objective.trim() || files.length === 0) return;
-    setIsAnalyzing(true);
-    // 模拟分析过程
-    setTimeout(() => {
-      setIsAnalyzing(false);
-    }, 2000);
+    
+    // Navigate to analysis editor with state
+    navigate('/analysis/editor', {
+      state: {
+        title: objective.split('\n')[0].slice(0, 50),
+        objective,
+        files: files.map(file => ({
+          id: Date.now().toString(),
+          name: file.name,
+          size: formatFileSize(file.size),
+          uploadTime: new Date().toLocaleString()
+        }))
+      }
+    });
   };
 
   const formatFileSize = (bytes: number): string => {
@@ -131,7 +141,9 @@ export function DataAnalysisPage() {
                       onClick={() => removeFile(index)}
                       className="p-1 hover:bg-gray-200 rounded-full"
                     >
-                      <X size={16} className="text-gray-400" />
+                      <svg className="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
                   </div>
                 ))}
@@ -142,16 +154,16 @@ export function DataAnalysisPage() {
           {/* 开始分析按钮 */}
           <button
             onClick={handleStartAnalysis}
-            disabled={!objective.trim() || files.length === 0 || isAnalyzing}
+            disabled={!objective.trim() || files.length === 0}
             className={`
               w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg
               transition-all duration-200
-              ${objective.trim() && files.length > 0 && !isAnalyzing
+              ${objective.trim() && files.length > 0
                 ? 'bg-blue-600 text-white hover:bg-blue-700'
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'}
             `}
           >
-            <span>{isAnalyzing ? '分析中...' : '开始分析'}</span>
+            <span>开始分析</span>
             <ArrowRight size={18} />
           </button>
         </div>

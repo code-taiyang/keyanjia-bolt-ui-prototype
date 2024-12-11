@@ -26,6 +26,8 @@ import { AppearanceSettings } from "./pages/settings/AppearanceSettings";
 import { LanguageSettings } from "./pages/settings/LanguageSettings";
 import { StorageSettings } from "./pages/settings/StorageSettings";
 import { PaperLibrary } from "./pages/resources/papers/PaperLibrary";
+import { AlgorithmAssistant } from './components/algorithm/AlgorithmAssistant';
+import { AlgorithmEditor } from './components/algorithm/editor/AlgorithmEditor';
 
 export default function App() {
   return (
@@ -49,6 +51,8 @@ export default function App() {
             <Route path="/tools/experiment" element={<ExperimentAssistant />} />
             <Route path="/tools/patent" element={<PatentAssistant />} />
             <Route path="/tools/funding" element={<FundAssistant />} />
+            <Route path="/tools/algorithm" element={<AlgorithmAssistant />} />
+            <Route path="/tools/algorithm/editor" element={<AlgorithmEditor />} />
             <Route path="/analysis" element={<DataAnalysisPage />} />
             <Route path="/analysis/editor" element={<AnalysisEditorPage />} />
             <Route path="/settings" element={<SettingsLayout />}>
