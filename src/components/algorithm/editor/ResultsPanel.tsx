@@ -1,21 +1,9 @@
 import React from 'react';
-import { Download, Share2, LineChart, BarChart2, PieChart } from 'lucide-react';
+import { LineChart, BarChart2, PieChart } from 'lucide-react';
 
 export function ResultsPanel() {
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between px-6 py-4 border-b">
-        <h3 className="text-sm font-medium text-gray-900">运行结果</h3>
-        <div className="flex items-center space-x-2">
-          <button className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50">
-            <Share2 className="h-4 w-4" />
-          </button>
-          <button className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50">
-            <Download className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-      
       <div className="flex-1 overflow-auto p-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Results Visualization */}

@@ -3,9 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './Header';
 import { ChatPanel } from './chat/ChatPanel';
 import { FileExplorer } from './FileExplorer';
-import { CodeEditor } from './CodeEditor';
+import { CodePanel } from './CodePanel';
 import { Terminal } from './Terminal';
 import { ResultsPanel } from './ResultsPanel';
+import { Share2, Download } from 'lucide-react';
 
 export function AlgorithmEditor() {
   const [projectName, setProjectName] = useState('未命名算法');
@@ -36,6 +37,14 @@ export function AlgorithmEditor() {
     }
   }, []);
 
+  const handleShare = () => {
+    console.log('Share results');
+  };
+
+  const handleDownload = () => {
+    console.log('Download results');
+  };
+
   return (
     <div className="h-screen flex flex-col">
       <Header
@@ -51,7 +60,7 @@ export function AlgorithmEditor() {
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top Controls */}
           <div className="bg-white border-b border-gray-200">
-            <div className="flex items-center h-12">
+            <div className="flex items-center justify-between h-12">
               <div className="flex px-4 space-x-4">
                 <button
                   onClick={() => setActiveTab('code')}
@@ -84,6 +93,25 @@ export function AlgorithmEditor() {
                   )}
                 </button>
               </div>
+
+              {activeTab === 'results' && (
+                <div className="flex items-center gap-2 px-4">
+                  <button 
+                    onClick={handleShare}
+                    className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50"
+                    title="分享结果"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </button>
+                  <button 
+                    onClick={handleDownload}
+                    className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50"
+                    title="下载结果"
+                  >
+                    <Download className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -101,7 +129,7 @@ export function AlgorithmEditor() {
                 {/* Right Panel */}
                 <div className="flex-1 flex flex-col overflow-hidden">
                   <div className="flex-1 overflow-hidden">
-                    <CodeEditor 
+                    <CodePanel 
                       selectedFile={selectedFile}
                       onShowResults={() => {
                         setShowResults(true);
