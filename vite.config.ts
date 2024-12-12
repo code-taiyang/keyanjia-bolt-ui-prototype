@@ -23,6 +23,10 @@ export default defineConfig({
         "src/**/*.test.*",
         "src/**/*.spec.*",
         "src/vite-env.d.ts",
+        "src/**/types/*.ts",
+        "src/**/type/*.ts",
+        "src/**/types.ts",
+        "src/**/type.ts",
       ],
       // 检测未使用的文件
       detectUnusedFiles: true,
