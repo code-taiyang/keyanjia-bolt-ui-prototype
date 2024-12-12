@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { MessageSquare, Layers } from 'lucide-react';
+import { MessageSquare, Layers, ChevronRight } from 'lucide-react';
 import { ReferenceList } from './ReferenceList';
 import { ReferenceCards } from './ReferenceCards';
 import { useLiteratureStore } from '../../../stores/literatureStore';
+import { ReferenceFloatingButton } from './ReferenceFloatingButton';
 
 interface ReferenceAreaProps {
   selectedMessageId: string | null;
@@ -11,12 +12,31 @@ interface ReferenceAreaProps {
 
 export function ReferenceArea({ selectedMessageId, onMessageSelect }: ReferenceAreaProps) {
   const [viewMode, setViewMode] = useState<'current' | 'all'>('current');
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const { messages } = useLiteratureStore();
 
   const hasReferences = selectedMessageId && messages.find(m => m.id === selectedMessageId)?.references?.length > 0;
 
+  if (isCollapsed) {
+    return (
+      <ReferenceFloatingButton onClick={() => setIsCollapsed(false)} />
+    );
+  }
+
   return (
-    <div className="w-96 border-l bg-white flex flex-col">
+    <div className="w-96 border-l bg-white flex flex-col relative transition-all duration-300 ease-in-out">
+      {/* 收起按钮 */}
+      <button
+        onClick={() => setIsCollapsed(true)}
+        className="absolute -left-3.5 top-32 w-4 h-8 bg-white border border-gray-200 rounded-l-md shadow-sm hover:border-blue-200 hover:shadow-md transition-all duration-200 group"
+        title="收起侧边栏"
+      >
+        <ChevronRight 
+          size={12} 
+          className="text-gray-400 group-hover:text-blue-500 transition-colors absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" 
+        />
+      </button>
+
       <div className="h-14 flex items-center justify-between px-6 border-b">
         <h2 className="text-base font-medium text-gray-900">参考文献</h2>
         <div className="flex items-center gap-1 bg-gray-50/80 backdrop-blur rounded-lg p-0.5">
