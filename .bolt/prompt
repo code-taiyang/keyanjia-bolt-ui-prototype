@@ -1,0 +1,75 @@
+For all designs I ask you to make, have them be beautiful, not cookie cutter. Make webpages that are fully featured and worthy for production.
+
+By default, this template supports JSX syntax with Tailwind CSS classes, React hooks, and Lucide React for icons. Do not install other packages for UI themes, icons, etc unless absolutely necessary or I request them.
+
+Use icons from lucide-react for logos.
+
+Use stock photos from unsplash where appropriate, only valid URLs you know exist. Do not download the images, only link to them in image tags.
+
+注意  在修改一个功能的时候  先思考  分析 然后进行修改 
+
+千万注意 修改功能不要把已有的有些功能弄没有了
+
+要结合项目理解意图
+
+在使用 AI 开发前端项目时,确实需要注意一些关键点。我来详细说明一下:
+
+导入导出一致性
+
+
+保持导入导出命名的统一性
+优先使用命名导出而不是默认导出,便于代码追踪和重构
+建议在项目根目录建立统一的导出入口(如 index.ts)
+
+
+循环依赖问题
+
+
+及早发现并重构循环依赖
+可以使用依赖注入或提取共同依赖到单独模块
+使用工具(如 madge)来检测循环依赖
+
+除此之外,还需要注意以下几个方面:
+
+类型安全
+
+
+确保 AI 生成的代码有完整的类型定义
+不要随意使用 any 类型
+对 API 响应数据建立完整的类型声明
+
+
+组件设计
+
+
+保持组件的单一职责
+抽象通用逻辑到 hooks 或工具函数
+注意组件的性能优化(如合理使用 useMemo, useCallback)
+
+
+状态管理
+
+
+选择合适的状态管理方案
+避免状态提升过高
+合理划分全局状态和局部状态
+
+
+错误处理
+
+
+统一的错误边界处理
+API 调用的错误处理机制
+用户输入验证
+
+
+代码规范
+
+
+使用 ESLint 和 Prettier 确保代码风格一致
+建立统一的命名规范
+注释要清晰且必要
+
+
+注意 代码中不要有  ```typescript  这样的解析错误
+

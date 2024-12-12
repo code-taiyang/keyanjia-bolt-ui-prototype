@@ -1,0 +1,15 @@
+src/components/activities/
+src/components/chat/
+src/components/coding/
+src/components/common/
+src/components/dashboard/
+src/components/datasets/
+src/components/fund/
+src/components/layout/
+src/components/literature/
+src/components/patent/
+src/components/projects/
+src/components/shared/
+src/components/team/
+src/components/workspace/
+src/components/writing/
