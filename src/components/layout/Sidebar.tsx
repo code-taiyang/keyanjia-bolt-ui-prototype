@@ -8,15 +8,9 @@ import {
   ChevronRight,
   BookOpen,
   ScrollText,
-  FileText,
-  Award,
-  Calculator,
-  TestTubes,
   Brain,
   LineChart,
-  Microscope,
   Code2,
-  Lightbulb,
   Database,
   BookMarked,
   MessageSquare,
@@ -68,41 +62,17 @@ export function Sidebar() {
       active: location.pathname === "/analysis"
     },
     { 
-      icon: <Microscope size={20} />, 
-      label: "实验助手",
-      to: "/tools/experiment",
-      active: location.pathname === "/tools/experiment"
-    },
-    { 
-      icon: <Calculator size={20} />, 
-      label: "算法助手",
+      icon: <Code2 size={20} />, 
+      label: "科研算法",
       to: "/tools/algorithm",
       active: location.pathname === "/tools/algorithm",
       badge: "New"
     },
     { 
-      icon: <Code2 size={20} />, 
-      label: "编程助手",
+      icon: <Brain size={20} />, 
+      label: "科研计算",
       to: "/tools/coding",
       active: location.pathname === "/tools/coding"
-    },
-    { 
-      icon: <FileText size={20} />, 
-      label: "专利助手",
-      to: "/tools/patent",
-      active: location.pathname === "/tools/patent"
-    },
-    { 
-      icon: <Award size={20} />, 
-      label: "基金助手",
-      to: "/tools/funding",
-      active: location.pathname === "/tools/funding"
-    },
-    { 
-      icon: <Lightbulb size={20} />, 
-      label: "研究规划",
-      to: "/tools/planning",
-      active: location.pathname === "/tools/planning"
     }
   ];
 
@@ -111,22 +81,19 @@ export function Sidebar() {
       icon: <Database size={20} />,
       label: "数据集",
       to: "/resources/datasets",
-      badge: "32",
-      active: location.pathname.startsWith("/resources/datasets")
+      badge: "32"
     },
     {
       icon: <BookMarked size={20} />,
       label: "文献库",
       to: "/resources/papers",
-      badge: "484",
-      active: location.pathname === "/resources/papers"
+      badge: "484"
     },
     {
-      icon: <Brain size={20} />,
+      icon: <LineChart size={20} />,
       label: "模型库",
       to: "/resources/models",
-      badge: "30",
-      active: location.pathname === "/resources/models"
+      badge: "30"
     }
   ];
 
@@ -134,10 +101,25 @@ export function Sidebar() {
     { 
       icon: <Settings size={20} />, 
       label: "设置",
-      to: "/settings",
-      active: location.pathname.startsWith("/settings")
+      to: "/settings"
     }
   ];
+
+  // 检查当前路径是否需要隐藏侧边栏
+  const hiddenPaths = [
+    '/tools/coding/computing/editor',
+    '/tools/algorithm/editor',
+    '/writing',
+    '/analysis/editor'
+  ];
+
+  const shouldHideSidebar = hiddenPaths.some(path => 
+    location.pathname.startsWith(path)
+  );
+
+  if (shouldHideSidebar) {
+    return null;
+  }
 
   return (
     <div className="relative">
