@@ -35,6 +35,12 @@ interface LiteratureState {
   getMessageReferences: (messageId: string) => Reference[];
   getPreviousMessage: (messageId: string) => Message | null;
   getNextMessage: (messageId: string) => Message | null;
+  deleteMessage: (messageId: string) => void;
+  renameMessage: (messageId: string, newTitle: string) => void;
+  deleteMessages: (messageIds: string[]) => void;
+  interpretReference: (reference: Reference) => Promise<void>;
+  saveToLibrary: (reference: Reference) => void;
+  saveToLibraryBatch: (references: Reference[]) => void;
 }
 
 export const useLiteratureStore = create<LiteratureState>((set, get) => ({
@@ -121,7 +127,7 @@ export const useLiteratureStore = create<LiteratureState>((set, get) => ({
   },
 
   startNewChat: () => {
-    set({ 
+    set({
       messages: [
         {
           id: '1',
@@ -139,7 +145,7 @@ export const useLiteratureStore = create<LiteratureState>((set, get) => ({
     const state = get();
     const message = state.messages.find(m => m.id === messageId);
     if (!message?.references) return [];
-    return message.references.map(refId => 
+    return message.references.map(refId =>
       state.references.find(ref => ref.id === refId)
     ).filter((ref): ref is Reference => ref !== undefined);
   },
@@ -154,5 +160,42 @@ export const useLiteratureStore = create<LiteratureState>((set, get) => ({
     const state = get();
     const currentIndex = state.messages.findIndex(m => m.id === messageId);
     return currentIndex < state.messages.length - 1 ? state.messages[currentIndex + 1] : null;
+  },
+
+  deleteMessage: (messageId: string) => {
+    set(state => ({
+      messages: state.messages.filter(m => m.id !== messageId)
+    }));
+  },
+
+  renameMessage: (messageId: string, newTitle: string) => {
+    set(state => ({
+      messages: state.messages.map(m =>
+        m.id === messageId ? { ...m, title: newTitle } : m
+      )
+    }));
+  },
+
+  deleteMessages: (messageIds: string[]) => {
+    set(state => ({
+      messages: state.messages.filter(m => !messageIds.includes(m.id))
+    }));
+  },
+
+  interpretReference: async (reference: Reference) => {
+    const content = `帮我解读这篇文献：${reference.title}`;
+    await get().sendMessage(content);
+  },
+
+  saveToLibrary: (reference: Reference) => {
+    // 实现保存到文献库的逻辑
+    console.log('Save to library:', reference);
+    // 这里可以显示一个 toast 提示
+  },
+
+  saveToLibraryBatch: (references: Reference[]) => {
+    // 实现批量保存到文献库的逻辑
+    console.log('Batch save to library:', references);
+    // 这里可以显示一个 toast 提示
   }
 }));

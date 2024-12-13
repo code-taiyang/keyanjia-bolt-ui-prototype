@@ -11,6 +11,7 @@ export function LiteratureAIPage() {
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
+  // Auto-select the latest AI message whenever messages change
   useEffect(() => {
     const aiMessages = messages.filter(m => m.type === 'ai');
     if (aiMessages.length > 0) {
@@ -20,22 +21,22 @@ export function LiteratureAIPage() {
 
   return (
     <div className="fixed inset-0 flex">
-      <HistorySidebar 
+      <HistorySidebar
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
       />
-      <FloatingActions 
+      <FloatingActions
         isHistoryOpen={isHistoryOpen}
         onHistoryClick={() => setIsHistoryOpen(true)}
       />
       <div className="flex-1 flex flex-col min-h-0">
-        <ChatArea 
+        <ChatArea
           onMessageSelect={setSelectedMessageId}
           selectedMessageId={selectedMessageId}
         />
         <InputArea />
       </div>
-      <ReferenceArea 
+      <ReferenceArea
         selectedMessageId={selectedMessageId}
         onMessageSelect={setSelectedMessageId}
       />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, Layers, ChevronRight } from 'lucide-react';
+import { MessageSquare, Layers, ChevronRight, CheckSquare, Square, Save, Quote } from 'lucide-react';
 import { ReferenceList } from './ReferenceList';
 import { ReferenceCards } from './ReferenceCards';
 import { useLiteratureStore } from '../../../stores/literatureStore';
@@ -13,9 +13,45 @@ interface ReferenceAreaProps {
 export function ReferenceArea({ selectedMessageId, onMessageSelect }: ReferenceAreaProps) {
   const [viewMode, setViewMode] = useState<'current' | 'all'>('current');
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { messages } = useLiteratureStore();
+  const [isBatchMode, setIsBatchMode] = useState(false);
+  const [selectedRefs, setSelectedRefs] = useState<string[]>([]);
+  const { messages, references, saveToLibraryBatch } = useLiteratureStore();
 
-  const hasReferences = selectedMessageId && messages.find(m => m.id === selectedMessageId)?.references?.length > 0;
+  // Get all unique references from all messages
+  const allReferences = React.useMemo(() => {
+    const refIds = new Set<string>();
+    messages.forEach(message => {
+      message.references?.forEach(refId => refIds.add(refId));
+    });
+    return Array.from(refIds);
+  }, [messages]);
+
+  const hasReferences = viewMode === 'current' 
+    ? selectedMessageId && messages.find(m => m.id === selectedMessageId)?.references?.length > 0
+    : allReferences.length > 0;
+
+  const handleBatchCitation = () => {
+    // 实现批量引用逻辑
+    const selectedReferences = references.filter(ref => selectedRefs.includes(ref.id));
+    // TODO: 实现批量引用功能
+    setSelectedRefs([]);
+    setIsBatchMode(false);
+  };
+
+  const handleBatchSave = () => {
+    const selectedReferences = references.filter(ref => selectedRefs.includes(ref.id));
+    saveToLibraryBatch(selectedReferences);
+    setSelectedRefs([]);
+    setIsBatchMode(false);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedRefs.length === references.length) {
+      setSelectedRefs([]);
+    } else {
+      setSelectedRefs(references.map(ref => ref.id));
+    }
+  };
 
   if (isCollapsed) {
     return (
@@ -39,35 +75,86 @@ export function ReferenceArea({ selectedMessageId, onMessageSelect }: ReferenceA
 
       <div className="h-14 flex items-center justify-between px-6 border-b">
         <h2 className="text-base font-medium text-gray-900">参考文献</h2>
-        <div className="flex items-center gap-1 bg-gray-50/80 backdrop-blur rounded-lg p-0.5">
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => setViewMode('current')}
-            className={`
-              flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors
-              ${viewMode === 'current' 
-                ? 'bg-white text-blue-600 shadow-sm' 
-                : 'text-gray-600 hover:bg-gray-100'
-              }
-            `}
+            onClick={() => setIsBatchMode(!isBatchMode)}
+            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+            title="批量操作"
           >
-            <MessageSquare size={16} />
-            <span>当前消息</span>
+            <CheckSquare size={18} className="text-gray-600" />
           </button>
-          <button
-            onClick={() => setViewMode('all')}
-            className={`
-              flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors
-              ${viewMode === 'all'
-                ? 'bg-white text-blue-600 shadow-sm'
-                : 'text-gray-600 hover:bg-gray-100'
-              }
-            `}
-          >
-            <Layers size={16} />
-            <span>全部消息</span>
-          </button>
+          <div className="flex items-center gap-1 bg-gray-50/80 backdrop-blur rounded-lg p-0.5">
+            <button
+              onClick={() => setViewMode('current')}
+              className={`
+                flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors
+                ${viewMode === 'current' 
+                  ? 'bg-white text-blue-600 shadow-sm' 
+                  : 'text-gray-600 hover:bg-gray-100'
+                }
+              `}
+            >
+              <MessageSquare size={16} />
+              <span>当前消息</span>
+            </button>
+            <button
+              onClick={() => setViewMode('all')}
+              className={`
+                flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors
+                ${viewMode === 'all'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:bg-gray-100'
+                }
+              `}
+            >
+              <Layers size={16} />
+              <span>全部消息</span>
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Batch Mode Header */}
+      {isBatchMode && (
+        <div className="px-4 py-2 border-b bg-blue-50/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={toggleSelectAll}
+                className="flex items-center gap-2 text-sm text-gray-600"
+              >
+                {selectedRefs.length === references.length ? (
+                  <CheckSquare size={16} className="text-blue-600" />
+                ) : (
+                  <Square size={16} />
+                )}
+                <span>全选</span>
+              </button>
+              <span className="text-sm text-gray-500">
+                已选择 {selectedRefs.length} 项
+              </span>
+            </div>
+            {selectedRefs.length > 0 && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleBatchCitation}
+                  className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+                >
+                  <Quote size={14} />
+                  <span>引用</span>
+                </button>
+                <button
+                  onClick={handleBatchSave}
+                  className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+                >
+                  <Save size={14} />
+                  <span>保存</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="flex-1 overflow-auto">
         {!hasReferences ? (
@@ -84,10 +171,29 @@ export function ReferenceArea({ selectedMessageId, onMessageSelect }: ReferenceA
           <ReferenceList 
             selectedMessageId={selectedMessageId}
             onMessageSelect={onMessageSelect}
+            isBatchMode={isBatchMode}
+            selectedRefs={selectedRefs}
+            onSelectRef={(refId) => {
+              setSelectedRefs(prev => 
+                prev.includes(refId)
+                  ? prev.filter(id => id !== refId)
+                  : [...prev, refId]
+              );
+            }}
           />
         ) : (
           <ReferenceCards
+            references={allReferences}
             onMessageSelect={onMessageSelect}
+            isBatchMode={isBatchMode}
+            selectedRefs={selectedRefs}
+            onSelectRef={(refId) => {
+              setSelectedRefs(prev => 
+                prev.includes(refId)
+                  ? prev.filter(id => id !== refId)
+                  : [...prev, refId]
+              );
+            }}
           />
         )}
       </div>

@@ -6,10 +6,26 @@ import { ReferenceItem } from './ReferenceItem';
 interface ReferenceListProps {
   selectedMessageId: string | null;
   onMessageSelect: (id: string) => void;
+  isBatchMode?: boolean;
+  selectedRefs?: string[];
+  onSelectRef?: (refId: string) => void;
 }
 
-export function ReferenceList({ selectedMessageId, onMessageSelect }: ReferenceListProps) {
-  const { messages, getMessageReferences, getPreviousMessage, getNextMessage } = useLiteratureStore();
+export function ReferenceList({ 
+  selectedMessageId, 
+  onMessageSelect,
+  isBatchMode = false,
+  selectedRefs = [],
+  onSelectRef
+}: ReferenceListProps) {
+  const { 
+    messages, 
+    getMessageReferences, 
+    getPreviousMessage, 
+    getNextMessage,
+    interpretReference,
+    saveToLibrary
+  } = useLiteratureStore();
   
   const currentMessage = messages.find(m => m.id === selectedMessageId);
   const references = currentMessage ? getMessageReferences(currentMessage.id) : [];
@@ -35,6 +51,11 @@ export function ReferenceList({ selectedMessageId, onMessageSelect }: ReferenceL
             key={reference.id} 
             reference={reference}
             index={index + 1}
+            onInterpret={interpretReference}
+            onSave={saveToLibrary}
+            isBatchMode={isBatchMode}
+            isSelected={selectedRefs.includes(reference.id)}
+            onSelect={onSelectRef}
           />
         ))}
       </div>
