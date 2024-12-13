@@ -34,7 +34,9 @@ import { ComputingListPage } from './pages/computing/ComputingListPage';
 import { AlgorithmListPage } from './pages/algorithm/AlgorithmListPage';
 import { NewAnalysisPage } from './pages/analysis/NewAnalysisPage';
 import { PlanningPage } from './pages/planning/PlanningPage';
-
+import { ExperimentEditorPage } from './pages/experiment/ExperimentEditorPage';
+import { FundEditorPage } from './pages/fund/FundEditorPage';
+import { PlanningEditorPage } from './pages/planning/PlanningEditorPage';
 
 function AppLayout() {
   const location = useLocation();
@@ -43,7 +45,10 @@ function AppLayout() {
     '/tools/coding/computing/editor',
     '/tools/algorithm/editor',
     '/writing',
-    '/analysis/editor'
+    '/analysis/editor',
+    '/experiment',
+    '/fund',
+    '/planning'
   ];
 
   const isEditorPage = editorPaths.some(path => 
@@ -77,6 +82,8 @@ function AppLayout() {
           <Route path="/tools/patent" element={<PatentAssistant />} />
           <Route path="/tools/funding" element={<FundAssistant />} />
           {/* <Route path="/tools/algorithm" element={<AlgorithmAssistant />} /> */}
+          <Route path="/experiment/:id" element={<ExperimentEditorPage />} />
+          <Route path="/fund/:id" element={<FundEditorPage />} />
           <Route path="/tools/algorithm" element={<AlgorithmListPage />} />
           <Route path="/tools/algorithm/assistant" element={<AlgorithmAssistant />} />
           <Route path="/tools/algorithm/editor" element={<AlgorithmEditor />} />
@@ -93,6 +100,7 @@ function AppLayout() {
             <Route path="storage" element={<StorageSettings />} />
           </Route>
           <Route path="/planning" element={<PlanningPage />} />
+          <Route path="/planning/:id" element={<PlanningEditorPage />} />
         </Routes>
       </div>
     </div>

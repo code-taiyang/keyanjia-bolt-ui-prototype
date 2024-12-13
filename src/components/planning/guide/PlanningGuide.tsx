@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Award, ArrowRight, X } from 'lucide-react';
-import { FundTypeSelector } from './FundTypeSelector';
-import { FundDescription } from './FundDescription';
+import { ClipboardList, ArrowRight, X } from 'lucide-react';
+import { PlanningTypeSelector } from './PlanningTypeSelector';
+import { PlanningDescription } from './PlanningDescription';
 
-interface FundGuideProps {
+interface PlanningGuideProps {
   onClose: () => void;
   onSubmit: (data: any) => void;
 }
 
-export function FundGuide({ onClose, onSubmit }: FundGuideProps) {
+export function PlanningGuide({ onClose, onSubmit }: PlanningGuideProps) {
   const [description, setDescription] = useState('');
   const [selectedType, setSelectedType] = useState('');
 
@@ -29,11 +29,11 @@ export function FundGuide({ onClose, onSubmit }: FundGuideProps) {
       <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-100 rounded-lg">
-            <Award className="h-5 w-5 text-blue-600" />
+            <ClipboardList className="h-5 w-5 text-blue-600" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">开始新的基金申请</h1>
-            <p className="text-sm text-gray-500 mt-1">填写基本信息开始您的基金申请</p>
+            <h1 className="text-xl font-semibold text-gray-900">开始新的研究规划</h1>
+            <p className="text-sm text-gray-500 mt-1">填写基本信息开始您的研究规划</p>
           </div>
         </div>
         <button 
@@ -46,12 +46,12 @@ export function FundGuide({ onClose, onSubmit }: FundGuideProps) {
 
       {/* Content */}
       <div className="p-8 space-y-8">
-        <FundDescription 
+        <PlanningDescription 
           value={description}
           onChange={setDescription}
         />
 
-        <FundTypeSelector
+        <PlanningTypeSelector
           selectedType={selectedType}
           onSelect={setSelectedType}
         />
@@ -76,7 +76,7 @@ export function FundGuide({ onClose, onSubmit }: FundGuideProps) {
               : 'bg-gray-100 text-gray-400 cursor-not-allowed'}
           `}
         >
-          <span>开始申请</span>
+          <span>开始规划</span>
           <ArrowRight size={16} />
         </button>
       </div>

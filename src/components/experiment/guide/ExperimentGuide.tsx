@@ -1,36 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { TestTubes, ArrowRight, X } from 'lucide-react';
 import { ExperimentTypeSelector } from './ExperimentTypeSelector';
 import { ExperimentDescription } from './ExperimentDescription';
 
 interface ExperimentGuideProps {
   onClose: () => void;
+  onSubmit: (data: any) => void;
 }
 
-export function ExperimentGuide({ onClose }: ExperimentGuideProps) {
-  const navigate = useNavigate();
+export function ExperimentGuide({ onClose, onSubmit }: ExperimentGuideProps) {
   const [description, setDescription] = useState('');
   const [selectedType, setSelectedType] = useState('');
 
   const handleSubmit = () => {
     if (!description || !selectedType) return;
     
-    const experimentInfo = {
+    onSubmit({
       title: description.split('\n')[0].slice(0, 50),
       description,
-      type: selectedType,
-      createdAt: new Date().toISOString()
-    };
-    
-    // Generate a unique ID for the new experiment
-    const experimentId = Date.now().toString();
-    
-    navigate(`/experiment/${experimentId}`, { 
-      state: {
-        ...experimentInfo,
-        isNew: true
-      }
+      type: selectedType
     });
     onClose();
   };

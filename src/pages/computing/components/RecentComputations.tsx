@@ -92,7 +92,17 @@ export function RecentComputations() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {computations.map((computation) => (
-          <Link key={computation.id} to={`/tools/coding/computing/editor/${computation.id}`}>
+          <Link 
+            key={computation.id} 
+            to="/tools/algorithm/editor"
+            state={{ 
+              algorithmId: `algo-${computation.id}`,
+              title: computation.title,
+              description: computation.description,
+              type: computation.type,
+              isNew: false
+            }}
+          >
             <Card className="p-4 hover:border-blue-200 transition-all duration-200">
               <div className="flex items-start gap-4">
                 <div className="p-2 rounded-lg bg-gray-50">
