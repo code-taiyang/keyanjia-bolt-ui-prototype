@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { ChatPanel } from './components/ChatPanel';
-import { DataPanel } from './components/DataPanel';
-import { CodePanel } from './components/CodePanel';
+import { FileList } from './components/FileList';
+import { ContentPanel } from './components/ContentPanel';
 import { ResultsPanel } from './components/ResultsPanel';
-import { sampleAnalysisResults } from '../../utils/sampleAnalysisData';
-import { AnalysisResult } from '../../types/analysis';
-import { Download, FileText, FileImage, ChevronRight } from 'lucide-react';
+import { Terminal } from './components/Terminal';
+import { useAnalysisStore } from '../../stores/analysisStore';
+import { Tabs } from './components/Tabs';
 
 interface LocationState {
   title: string;
@@ -20,39 +20,125 @@ interface LocationState {
   }>;
 }
 
+interface File {
+  id: string;
+  name: string;
+  type: 'code' | 'data';
+  content: string;
+  language?: string;
+  size?: string;
+  uploadTime?: string;
+}
+
 export function AnalysisEditorPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as LocationState;
+  const { results, isAnalyzing, startAnalysis } = useAnalysisStore();
 
-  // Redirect if no state
-  if (!state) {
-    navigate('/analysis');
-    return null;
-  }
-
-  const [title, setTitle] = useState(state.title || '未命名分析');
+  // 状态管理
+  const [title, setTitle] = useState(state?.title || '未命名分析');
   const [isSaved, setIsSaved] = useState(true);
-  const [activeTab, setActiveTab] = useState<'data' | 'code' | 'results'>('data');
-  const [results, setResults] = useState<AnalysisResult | null>(sampleAnalysisResults);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'files' | 'results'>('files');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isTerminalMinimized, setIsTerminalMinimized] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
 
+  // 如果没有state，重定向回分析列表页面
+  useEffect(() => {
+    if (!state) {
+      navigate('/analysis');
+      return;
+    }
+  }, [state, navigate]);
+
+  // 示例文件数据
+  const sampleFiles: File[] = [
+    {
+      id: 'analysis',
+      name: 'analysis.py',
+      type: 'code',
+      content: `import pandas as pd
+import numpy as np
+from scipy import stats
+
+def analyze_data(df):
+    """
+    Perform statistical analysis on the dataset
+    """
+    # Basic statistics
+    stats = df.describe()
+    
+    # Correlation analysis
+    corr = df.corr()
+    
+    return {
+        'basic_stats': stats,
+        'correlation': corr
+    }`,
+      language: 'python'
+    },
+    {
+      id: 'visualization',
+      name: 'visualization.py',
+      type: 'code',
+      content: `import matplotlib.pyplot as plt
+import seaborn as sns
+
+def create_visualizations(df):
+    """
+    Create data visualizations
+    """
+    # Distribution plots
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data=df)
+    plt.title('Data Distribution')
+    
+    # Correlation heatmap
+    plt.figure(figsize=(8, 8))
+    sns.heatmap(df.corr(), annot=True)
+    plt.title('Correlation Matrix')`,
+      language: 'python'
+    },
+    {
+      id: 'data1',
+      name: 'dataset.csv',
+      type: 'data',
+      content: '',
+      size: '2.3 MB',
+      uploadTime: '2024-03-15 14:30'
+    }
+  ];
+
+  // 处理函数
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle);
     setIsSaved(false);
-    // Auto save after 1 second
-    setTimeout(() => setIsSaved(true), 1000);
+    // 自动保存
+    setTimeout(() => {
+      setIsSaved(true);
+    }, 1000);
+  };
+
+  const handleTabChange = (tab: 'files' | 'results') => {
+    setActiveTab(tab);
+  };
+
+  const handleShare = () => {
+    console.log('Share analysis results');
   };
 
   const handleExport = (format: 'pdf' | 'word') => {
-    // Implement export logic here
     console.log(`Exporting as ${format}...`);
     setShowExportMenu(false);
   };
 
+  if (!state) {
+    return null;
+  }
+
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-gray-50">
       <Header 
         title={title}
         onTitleChange={handleTitleChange}
@@ -60,84 +146,65 @@ export function AnalysisEditorPage() {
       />
       
       <div className="flex-1 flex overflow-hidden">
+        {/* 左侧聊天面板 */}
         <ChatPanel />
         
-        <div className="flex-1 flex flex-col">
-          <div className="border-b bg-white">
-            <div className="flex items-center justify-between px-4">
-              <div className="flex space-x-1">
-                {[
-                  { id: 'data', label: '数据' },
-                  { id: 'code', label: '代码' },
-                  { id: 'results', label: '结果' }
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                    className={`
-                      flex items-center gap-2 px-4 py-3 text-sm font-medium
-                      ${activeTab === tab.id
-                        ? 'text-blue-600 border-b-2 border-blue-600'
-                        : 'text-gray-500 hover:text-gray-700'}
-                    `}
-                  >
-                    <span>{tab.label}</span>
-                  </button>
-                ))}
+        {activeTab === 'files' ? (
+          <>
+            {/* 文件列表面板 */}
+            <div className="w-80 bg-white border-r flex flex-col">
+              <Tabs 
+                activeTab={activeTab} 
+                onTabChange={handleTabChange}
+                showActions={false}
+              />
+              <FileList 
+                files={sampleFiles}
+                selectedFileId={selectedFile?.id}
+                onFileSelect={setSelectedFile}
+              />
+            </div>
+
+            {/* 右侧内容区域 */}
+            <div className="flex-1 flex flex-col">
+              {/* 文件预览面板 */}
+              <div className="flex-1 bg-white overflow-hidden">
+                <ContentPanel file={selectedFile} />
               </div>
 
-              {activeTab === 'results' && results && (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowExportMenu(!showExportMenu)}
-                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-                  >
-                    <Download size={18} />
-                    <span className="text-sm">导出报告</span>
-                    <ChevronRight size={16} className="text-gray-400" />
-                  </button>
-
-                  {showExportMenu && (
-                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border py-1 z-10">
-                      <button
-                        onClick={() => handleExport('pdf')}
-                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
-                      >
-                        <FileText size={16} className="text-red-500" />
-                        <span>导出为 PDF</span>
-                      </button>
-                      <button
-                        onClick={() => handleExport('word')}
-                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
-                      >
-                        <FileImage size={16} className="text-blue-500" />
-                        <span>导出为 Word</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+              {/* Terminal面板 */}
+              <Terminal 
+                isMinimized={isTerminalMinimized}
+                onToggleMinimize={() => setIsTerminalMinimized(!isTerminalMinimized)}
+              />
             </div>
-          </div>
+          </>
+        ) : (
+          <>
+            {/* 结果面板 - 占据除聊天面板外的全部空间 */}
+            <div className="flex-1 flex flex-col bg-white">
+              <Tabs 
+                activeTab={activeTab} 
+                onTabChange={handleTabChange}
+                onShare={handleShare}
+                onExport={() => setShowExportMenu(!showExportMenu)}
+                showExportMenu={showExportMenu}
+                setShowExportMenu={setShowExportMenu}
+                handleExport={handleExport}
+                showActions={true}
+              />
 
-          <div className="flex-1 overflow-hidden">
-            {activeTab === 'data' && <DataPanel files={state.files} />}
-            {activeTab === 'code' && (
-              <CodePanel 
-                config={{ 
-                  objective: state.objective,
-                  files: state.files 
-                }} 
-              />
-            )}
-            {activeTab === 'results' && (
-              <ResultsPanel 
-                results={results}
-                isAnalyzing={isAnalyzing}
-              />
-            )}
-          </div>
-        </div>
+              <div className="flex-1 overflow-auto">
+                <div className="h-full">
+                  <ResultsPanel 
+                    results={results}
+                    isAnalyzing={isAnalyzing}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

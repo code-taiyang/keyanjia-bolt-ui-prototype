@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bot, Send, Zap, Paperclip, Sparkles } from 'lucide-react';
 import { Message } from './Message';
-import { ChatHeader } from './ChatHeader';
+
 
 interface AnalysisStep {
   id: string;
@@ -154,7 +154,6 @@ export function ChatPanel() {
 
   return (
     <div className="w-96 border-r bg-white flex flex-col">
-      <ChatHeader />
       
       <div className="flex-1 overflow-auto p-4 space-y-4">
         {messages.map((message) => (

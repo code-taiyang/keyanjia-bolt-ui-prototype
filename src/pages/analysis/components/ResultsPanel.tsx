@@ -1,30 +1,9 @@
 import React from 'react';
-import { ChevronRight, Users, TrendingUp, LineChart, PieChart } from 'lucide-react';
+import { BarChart2, TrendingUp, LineChart, PieChart } from 'lucide-react';
+import { AnalysisResult } from '../../../types/analysis';
 
 interface ResultsPanelProps {
-  results: {
-    type: string;
-    data: {
-      sampleFeatures: {
-        gender: { [key: string]: number };
-        grade: { [key: string]: number };
-        major: { [key: string]: number };
-      };
-      variables: {
-        [key: string]: {
-          mean: number;
-          std: number;
-          percentile: number;
-        };
-      };
-      correlations: Array<{
-        pair: string;
-        coefficient: number;
-      }>;
-    };
-    insights: string[];
-    recommendations: string[];
-  } | null;
+  results: AnalysisResult | null;
   isAnalyzing: boolean;
 }
 
@@ -43,18 +22,18 @@ export function ResultsPanel({ results, isAnalyzing }: ResultsPanelProps) {
   if (!results) {
     return (
       <div className="h-full flex items-center justify-center text-sm text-gray-500">
-        运行分析代码以查看结果
+        暂无分析结果
       </div>
     );
   }
 
   return (
-    <div className="h-full overflow-auto bg-gray-50">
+    <div className="h-full overflow-auto bg-white">
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         {/* 样本特征 */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-base font-medium text-gray-900 mb-4 flex items-center">
-            <Users className="h-5 w-5 text-blue-500 mr-2" />
+            <BarChart2 className="h-5 w-5 text-blue-500 mr-2" />
             样本特征
           </h3>
           <div className="grid grid-cols-3 gap-4">
@@ -82,7 +61,7 @@ export function ResultsPanel({ results, isAnalyzing }: ResultsPanelProps) {
         </div>
 
         {/* 主要变量统计 */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-base font-medium text-gray-900 mb-4 flex items-center">
             <TrendingUp className="h-5 w-5 text-blue-500 mr-2" />
             主要变量描述性统计
@@ -109,7 +88,7 @@ export function ResultsPanel({ results, isAnalyzing }: ResultsPanelProps) {
         </div>
 
         {/* 相关性分析 */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-base font-medium text-gray-900 mb-4 flex items-center">
             <LineChart className="h-5 w-5 text-blue-500 mr-2" />
             相关性分析
@@ -137,7 +116,7 @@ export function ResultsPanel({ results, isAnalyzing }: ResultsPanelProps) {
         </div>
 
         {/* 研究发现 */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-base font-medium text-gray-900 mb-4 flex items-center">
             <PieChart className="h-5 w-5 text-blue-500 mr-2" />
             研究发现
@@ -148,7 +127,7 @@ export function ResultsPanel({ results, isAnalyzing }: ResultsPanelProps) {
               <ul className="space-y-2">
                 {results.insights.map((insight, index) => (
                   <li key={index} className="flex items-start text-sm">
-                    <ChevronRight className="h-4 w-4 text-blue-500 mt-0.5 mr-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 mr-2 flex-shrink-0" />
                     <span className="text-gray-600">{insight}</span>
                   </li>
                 ))}
@@ -159,7 +138,7 @@ export function ResultsPanel({ results, isAnalyzing }: ResultsPanelProps) {
               <ul className="space-y-2">
                 {results.recommendations.map((recommendation, index) => (
                   <li key={index} className="flex items-start text-sm">
-                    <ChevronRight className="h-4 w-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-600 mt-1.5 mr-2 flex-shrink-0" />
                     <span className="text-gray-600">{recommendation}</span>
                   </li>
                 ))}

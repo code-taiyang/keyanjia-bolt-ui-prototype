@@ -43,20 +43,21 @@ import { ExperimentEditorPage } from "./pages/experiment/ExperimentEditorPage";
 import { FundEditorPage } from "./pages/fund/FundEditorPage";
 import { PlanningEditorPage } from "./pages/planning/PlanningEditorPage";
 
+
 function AppLayout() {
   const location = useLocation();
-
+  
   const editorPaths = [
-    "/tools/coding/computing/editor",
-    "/tools/algorithm/editor",
-    "/writing",
-    "/analysis/editor",
-    "/experiment",
-    "/fund",
-    "/planning",
+    '/tools/coding/computing/editor',
+    '/tools/algorithm/editor',
+    '/writing',
+    '/analysis/editor',
+    '/experiment',
+    '/fund',
+    '/planning'
   ];
 
-  const isEditorPage = editorPaths.some((path) =>
+  const isEditorPage = editorPaths.some(path => 
     location.pathname.startsWith(path)
   );
 
@@ -98,6 +99,8 @@ function AppLayout() {
           <Route path="/analysis" element={<DataAnalysisPage />} />
           <Route path="/analysis/new" element={<NewAnalysisPage />} />
           <Route path="/analysis/editor" element={<AnalysisEditorPage />} />
+          <Route path="/planning" element={<PlanningPage />} />
+          <Route path="/planning/:id" element={<PlanningEditorPage />} />
           <Route path="/settings" element={<SettingsLayout />}>
             <Route path="profile" element={<ProfileSettings />} />
             <Route path="notifications" element={<NotificationSettings />} />
@@ -107,8 +110,6 @@ function AppLayout() {
             <Route path="language" element={<LanguageSettings />} />
             <Route path="storage" element={<StorageSettings />} />
           </Route>
-          <Route path="/planning" element={<PlanningPage />} />
-          <Route path="/planning/:id" element={<PlanningEditorPage />} />
         </Routes>
       </div>
     </div>
