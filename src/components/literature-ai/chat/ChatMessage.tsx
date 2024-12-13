@@ -11,12 +11,12 @@ interface ChatMessageProps {
   onReferenceClick?: (refId: string) => void;
 }
 
-export function ChatMessage({
-  message,
-  isSelected,
-  onClick,
-  onQuestionClick,
-  onReferenceClick
+export function ChatMessage({ 
+  message, 
+  isSelected, 
+  onClick, 
+  onQuestionClick, 
+  onReferenceClick 
 }: ChatMessageProps) {
   const isAI = message.type === 'ai';
   const isWelcome = isAI && message.content.includes('欢迎使用文献AI');
@@ -43,7 +43,7 @@ export function ChatMessage({
     }
 
     return (
-      <div
+      <div 
         className={`text-sm tracking-wide leading-7 ${isAI ? 'text-gray-800' : 'text-white/95'}`}
         dangerouslySetInnerHTML={{ __html: content }}
         onClick={(e) => {
@@ -57,7 +57,7 @@ export function ChatMessage({
   };
 
   return (
-    <div
+    <div 
       className={`
         px-4 py-4 cursor-pointer group relative
         hover:bg-gray-50/50 transition-colors duration-200

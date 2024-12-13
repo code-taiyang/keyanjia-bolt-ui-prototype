@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
-import { X, Plus, Star, MoreVertical, Trash2, Edit2, CheckSquare, Square } from 'lucide-react';
+import { Plus, MoreVertical, Trash2, Edit2, CheckSquare, Square, ArrowLeft } from 'lucide-react';
 import { useLiteratureStore } from '../../../stores/literatureStore';
 import { Tooltip } from '../../../components/common/Tooltip';
-
-interface HistorySidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+import { Link } from 'react-router-dom';
 
 interface ChatHistoryItem {
   id: string;
   title: string;
-  time: string;
-  isStarred: boolean;
 }
 
 interface ChatGroup {
@@ -22,7 +16,6 @@ interface ChatGroup {
 
 function ChatHistoryItem({ 
   chat, 
-  onToggleStar, 
   onDelete,
   onRename,
   isBatchMode,
@@ -30,7 +23,6 @@ function ChatHistoryItem({
   onSelect
 }: { 
   chat: ChatHistoryItem; 
-  onToggleStar: (id: string) => void;
   onDelete: (id: string) => void;
   onRename: (id: string, newTitle: string) => void;
   isBatchMode: boolean;
@@ -82,15 +74,6 @@ function ChatHistoryItem({
               {chat.title}
             </div>
           )}
-          <div className="text-xs text-gray-500 mt-1 flex items-center gap-2">
-            <span>{chat.time}</span>
-            {chat.isStarred && (
-              <>
-                <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
-                <Star size={12} className="text-yellow-400 fill-yellow-400" />
-              </>
-            )}
-          </div>
         </div>
         
         {!isBatchMode && !isEditing && (
@@ -138,40 +121,35 @@ function ChatHistoryItem({
   );
 }
 
-export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
+export function HistorySidebar() {
   const [isBatchMode, setIsBatchMode] = useState(false);
   const [selectedChats, setSelectedChats] = useState<string[]>([]);
-  const { messages, deleteMessage, renameMessage, deleteMessages } = useLiteratureStore();
+  const { messages, deleteMessage, renameMessage, deleteMessages, startNewChat } = useLiteratureStore();
   const [historyGroups] = React.useState<ChatGroup[]>([
     {
       title: '今天',
       chats: [
-        { id: '1', title: '深度学习在气候预测中的应用研究', time: '10:30', isStarred: true },
-        { id: '2', title: '机器学习算法性能对比分析', time: '09:15', isStarred: false }
+        { id: '1', title: '深度学习在气候预测中的应用研究' },
+        { id: '2', title: '机器学习算法性能对比分析' }
       ]
     },
     {
       title: '昨天',
       chats: [
-        { id: '3', title: '神经网络模型优化研究', time: '15:45', isStarred: true },
-        { id: '4', title: '数据预处理方法探讨', time: '11:20', isStarred: false }
+        { id: '3', title: '神经网络模型优化研究' },
+        { id: '4', title: '数据预处理方法探讨' }
       ]
     },
     {
       title: '更早',
       chats: [
-        { id: '5', title: '强化学习在控制系统中的应用', time: '3月10日', isStarred: false },
-        { id: '6', title: '图神经网络最新研究进展', time: '3月8日', isStarred: true }
+        { id: '5', title: '强化学习在控制系统中的应用' },
+        { id: '6', title: '图神经网络最新研究进展' }
       ]
     }
   ]);
 
   const allChats = historyGroups.flatMap(group => group.chats);
-  
-  const handleToggleStar = React.useCallback((chatId: string) => {
-    // 实际应用中这里应该调用 store 的方法来更新状态
-    console.log('Toggle star for chat:', chatId);
-  }, []);
 
   const handleDelete = React.useCallback((chatId: string) => {
     deleteMessage(chatId);
@@ -200,105 +178,104 @@ export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
   };
 
   return (
-    <div className={`
-      fixed inset-y-0 left-0 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-20
-      ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-    `}>
-      <div className="flex flex-col h-full">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 h-14 border-b bg-gray-50/80 backdrop-blur-sm">
-          <h2 className="text-base font-medium text-gray-900">历史对话</h2>
-          <div className="flex items-center gap-2">
-            <Tooltip content="批量操作" placement="bottom">
-              <button 
-                onClick={() => setIsBatchMode(!isBatchMode)}
-                className="p-2 hover:bg-white/80 rounded-lg transition-colors relative group"
-              >
-                <CheckSquare size={18} className="text-gray-600" />
-              </button>
-            </Tooltip>
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 h-14 border-b bg-gray-50/80 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <Link 
+            to="/"
+            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <ArrowLeft size={18} className="text-gray-600" />
+          </Link>
+          <h2 className="text-base font-medium text-gray-900">文献AI</h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <Tooltip content="批量操作" placement="bottom">
             <button 
-              onClick={onClose}
-              className="p-2 hover:bg-white/80 rounded-lg transition-colors"
+              onClick={() => setIsBatchMode(!isBatchMode)}
+              className="p-2 hover:bg-white/80 rounded-lg transition-colors relative group"
             >
-              <X size={18} className="text-gray-600" />
+              <CheckSquare size={18} className="text-gray-600" />
             </button>
+          </Tooltip>
+        </div>
+      </div>
+
+      {/* Batch Mode Header */}
+      {isBatchMode && (
+        <div className="px-4 py-2 border-b bg-blue-50/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={toggleSelectAll}
+                className="flex items-center gap-2 text-sm text-gray-600"
+              >
+                {selectedChats.length === allChats.length ? (
+                  <CheckSquare size={16} className="text-blue-600" />
+                ) : (
+                  <Square size={16} />
+                )}
+                <span>全选</span>
+              </button>
+              <span className="text-sm text-gray-500">
+                已选择 {selectedChats.length} 项
+              </span>
+            </div>
+            {selectedChats.length > 0 && (
+              <button
+                onClick={handleBatchDelete}
+                className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700"
+              >
+                <Trash2 size={14} />
+                <span>删除</span>
+              </button>
+            )}
           </div>
         </div>
+      )}
 
-        {/* Batch Mode Header */}
-        {isBatchMode && (
-          <div className="px-4 py-2 border-b bg-blue-50/50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={toggleSelectAll}
-                  className="flex items-center gap-2 text-sm text-gray-600"
-                >
-                  {selectedChats.length === allChats.length ? (
-                    <CheckSquare size={16} className="text-blue-600" />
-                  ) : (
-                    <Square size={16} />
-                  )}
-                  <span>全选</span>
-                </button>
-                <span className="text-sm text-gray-500">
-                  已选择 {selectedChats.length} 项
-                </span>
-              </div>
-              {selectedChats.length > 0 && (
-                <button
-                  onClick={handleBatchDelete}
-                  className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700"
-                >
-                  <Trash2 size={14} />
-                  <span>删除</span>
-                </button>
-              )}
+      {/* New Chat Button */}
+      <div className="p-4">
+        <button 
+          onClick={startNewChat}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm"
+        >
+          <Plus size={18} />
+          <span className="font-medium">新建对话</span>
+        </button>
+      </div>
+
+      {/* Chat History List */}
+      <div className="flex-1 overflow-y-auto px-2">
+        {historyGroups.map((group, index) => (
+          <div key={index} className="mb-6 last:mb-2">
+            <div className="px-2 mb-2">
+              <h3 className="text-xs font-medium text-gray-500">
+                {group.title}
+              </h3>
+            </div>
+            <div className="space-y-1">
+              {group.chats.map(chat => (
+                <ChatHistoryItem
+                  key={chat.id}
+                  chat={chat}
+                  onDelete={handleDelete}
+                  onRename={handleRename}
+                  isBatchMode={isBatchMode}
+                  isSelected={selectedChats.includes(chat.id)}
+                  onSelect={(id) => {
+                    setSelectedChats(prev => 
+                      prev.includes(id)
+                        ? prev.filter(chatId => chatId !== id)
+                        : [...prev, id]
+                    );
+                  }}
+                />
+              ))}
             </div>
           </div>
-        )}
-
-        {/* New Chat Button */}
-        <div className="p-4">
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm">
-            <Plus size={18} />
-            <span className="font-medium">新建对话</span>
-          </button>
-        </div>
-
-        {/* Chat History List */}
-        <div className="flex-1 overflow-y-auto px-2">
-          {historyGroups.map((group, index) => (
-            <div key={index} className="mb-6 last:mb-2">
-              <div className="px-2 mb-2">
-                <h3 className="text-xs font-medium text-gray-500">
-                  {group.title}
-                </h3>
-              </div>
-              <div className="space-y-1">
-                {group.chats.map(chat => (
-                  <ChatHistoryItem
-                    key={chat.id}
-                    chat={chat}
-                    onToggleStar={handleToggleStar}
-                    onDelete={handleDelete}
-                    onRename={handleRename}
-                    isBatchMode={isBatchMode}
-                    isSelected={selectedChats.includes(chat.id)}
-                    onSelect={(id) => {
-                      setSelectedChats(prev => 
-                        prev.includes(id)
-                          ? prev.filter(chatId => chatId !== id)
-                          : [...prev, id]
-                      );
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
     </div>
   );

@@ -127,7 +127,7 @@ export const useLiteratureStore = create<LiteratureState>((set, get) => ({
   },
 
   startNewChat: () => {
-    set({
+    set({ 
       messages: [
         {
           id: '1',
@@ -145,7 +145,7 @@ export const useLiteratureStore = create<LiteratureState>((set, get) => ({
     const state = get();
     const message = state.messages.find(m => m.id === messageId);
     if (!message?.references) return [];
-    return message.references.map(refId =>
+    return message.references.map(refId => 
       state.references.find(ref => ref.id === refId)
     ).filter((ref): ref is Reference => ref !== undefined);
   },
@@ -170,7 +170,7 @@ export const useLiteratureStore = create<LiteratureState>((set, get) => ({
 
   renameMessage: (messageId: string, newTitle: string) => {
     set(state => ({
-      messages: state.messages.map(m =>
+      messages: state.messages.map(m => 
         m.id === messageId ? { ...m, title: newTitle } : m
       )
     }));

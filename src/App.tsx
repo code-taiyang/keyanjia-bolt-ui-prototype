@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { Sidebar } from "./components/layout/Sidebar";
 import { Header } from "./components/layout/Header";
 import { Dashboard } from "./pages/Dashboard";
@@ -30,28 +35,28 @@ import { AlgorithmAssistant } from "./components/algorithm/AlgorithmAssistant";
 import { AlgorithmEditor } from "./components/algorithm/editor/AlgorithmEditor";
 import { ComputingEditor } from "./components/coding/computing/ComputingEditor";
 
-import { ComputingListPage } from './pages/computing/ComputingListPage';
-import { AlgorithmListPage } from './pages/algorithm/AlgorithmListPage';
-import { NewAnalysisPage } from './pages/analysis/NewAnalysisPage';
-import { PlanningPage } from './pages/planning/PlanningPage';
-import { ExperimentEditorPage } from './pages/experiment/ExperimentEditorPage';
-import { FundEditorPage } from './pages/fund/FundEditorPage';
-import { PlanningEditorPage } from './pages/planning/PlanningEditorPage';
+import { ComputingListPage } from "./pages/computing/ComputingListPage";
+import { AlgorithmListPage } from "./pages/algorithm/AlgorithmListPage";
+import { NewAnalysisPage } from "./pages/analysis/NewAnalysisPage";
+import { PlanningPage } from "./pages/planning/PlanningPage";
+import { ExperimentEditorPage } from "./pages/experiment/ExperimentEditorPage";
+import { FundEditorPage } from "./pages/fund/FundEditorPage";
+import { PlanningEditorPage } from "./pages/planning/PlanningEditorPage";
 
 function AppLayout() {
   const location = useLocation();
-  
+
   const editorPaths = [
-    '/tools/coding/computing/editor',
-    '/tools/algorithm/editor',
-    '/writing',
-    '/analysis/editor',
-    '/experiment',
-    '/fund',
-    '/planning'
+    "/tools/coding/computing/editor",
+    "/tools/algorithm/editor",
+    "/writing",
+    "/analysis/editor",
+    "/experiment",
+    "/fund",
+    "/planning",
   ];
 
-  const isEditorPage = editorPaths.some(path => 
+  const isEditorPage = editorPaths.some((path) =>
     location.pathname.startsWith(path)
   );
 
@@ -85,7 +90,10 @@ function AppLayout() {
           <Route path="/experiment/:id" element={<ExperimentEditorPage />} />
           <Route path="/fund/:id" element={<FundEditorPage />} />
           <Route path="/tools/algorithm" element={<AlgorithmListPage />} />
-          <Route path="/tools/algorithm/assistant" element={<AlgorithmAssistant />} />
+          <Route
+            path="/tools/algorithm/assistant"
+            element={<AlgorithmAssistant />}
+          />
           <Route path="/tools/algorithm/editor" element={<AlgorithmEditor />} />
           <Route path="/analysis" element={<DataAnalysisPage />} />
           <Route path="/analysis/new" element={<NewAnalysisPage />} />
