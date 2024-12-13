@@ -4,7 +4,6 @@ import { WritingHeader } from '../components/writing/editor/WritingHeader';
 import { ChatPanel } from '../components/writing/editor/ChatPanel';
 import { WritingOutline } from '../components/writing/editor/WritingOutline';
 import { WritingContent } from '../components/writing/editor/WritingContent';
-import { WritingReference } from '../components/writing/editor/WritingReference';
 import { defaultOutline } from '../utils/writingTemplates';
 
 export function WritingPage() {
@@ -20,7 +19,6 @@ export function WritingPage() {
   const [wordCount, setWordCount] = useState(0);
   const [isModified, setIsModified] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [isReferenceOpen, setIsReferenceOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   // Redirect if no state
@@ -89,7 +87,7 @@ export function WritingPage() {
     setIsModified(true);
   }, []);
 
-  const handleOutlineChange = useCallback((newOutline: string[]) => {
+  const handleOutlineUpdate = useCallback((newOutline: string[]) => {
     setOutline(newOutline);
     setIsModified(true);
   }, []);
@@ -109,10 +107,6 @@ export function WritingPage() {
     }, 500);
   }, []);
 
-  const handleSectionSelect = useCallback((section: string | null) => {
-    setSelectedSection(section);
-  }, []);
-
   if (!location.state) {
     return null;
   }
@@ -126,8 +120,6 @@ export function WritingPage() {
         isModified={isModified}
         isSaving={isSaving}
         lastSaved={lastSaved}
-        onToggleReference={() => setIsReferenceOpen(!isReferenceOpen)}
-        isReferenceOpen={isReferenceOpen}
         onSave={handleSave}
       />
 
@@ -136,24 +128,16 @@ export function WritingPage() {
         
         <WritingOutline
           items={outline}
-          onUpdate={handleOutlineChange}
+          onUpdate={handleOutlineUpdate}
           selectedSection={selectedSection}
-          onSectionSelect={handleSectionSelect}
+          onSectionSelect={setSelectedSection}
         />
         
-        <div className="flex-1 flex bg-white rounded-tl-xl shadow-sm overflow-hidden">
-          <WritingContent
-            content={content}
-            onContentChange={handleContentChange}
-            selectedSection={selectedSection}
-          />
-          
-          {isReferenceOpen && (
-            <WritingReference
-              onClose={() => setIsReferenceOpen(false)}
-            />
-          )}
-        </div>
+        <WritingContent
+          content={content}
+          onContentChange={handleContentChange}
+          selectedSection={selectedSection}
+        />
       </div>
     </div>
   );

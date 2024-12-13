@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Paperclip, Zap } from 'lucide-react';
-import { useReferenceStore } from '../../../../stores/referenceStore';
+import React, { useState, useRef, useEffect } from "react";
+import { Send, Sparkles, Paperclip, Zap } from "lucide-react";
 
 interface MessageInputProps {
   onSend: (content: string) => void;
@@ -13,56 +12,63 @@ export function MessageInput({
   onSend,
   disabled,
   placeholder = "输入您的问题...",
-  tokens
+  tokens,
 }: MessageInputProps) {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const addReference = useReferenceStore((state) => state.addReference);
+  const suggestionIndex = useRef(0);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    files.forEach(file => {
-      // 创建新的参考资料
-      const reference = {
-        id: Date.now().toString(),
-        title: file.name,
-        type: file.type.split('/').pop() || 'unknown',
-        size: formatFileSize(file.size),
-        uploadTime: new Date().toLocaleString(),
-        url: URL.createObjectURL(file)
-      };
+  const suggestions = [
+    "帮我优化这段内容的学术表达",
+    "检查这部分的语法和用词",
+    "为这段内容添加相关文献引用",
+    "帮我改进这部分的逻辑结构",
+    "生成这部分内容的英文翻译",
+    "提供写作建议和改进意见",
+  ];
 
-      // 添加到store
-      addReference(reference);
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        200
+      )}px`;
+    }
+  }, [input]);
 
-      // 在对话中显示上传成功消息
-      onSend(`上传文件：${file.name}`);
-    });
+  const handleSend = () => {
+    if (!input.trim() || disabled) return;
+    onSend(input);
+    setInput("");
+  };
 
-    // 清空input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleAISuggestion = () => {
+    const suggestion = suggestions[suggestionIndex.current];
+    setInput(suggestion);
+    suggestionIndex.current =
+      (suggestionIndex.current + 1) % suggestions.length;
+
+    if (textareaRef.current) {
+      textareaRef.current.focus();
     }
   };
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-  };
-
   return (
-    <div className="p-4 border-t">
+    <div className="p-4 border-t bg-white">
       <div className="relative">
         <input
           ref={fileInputRef}
           type="file"
           accept=".pdf,.doc,.docx,.txt"
           className="hidden"
-          onChange={handleFileUpload}
+          onChange={(e) => {
+            // Handle file upload
+            console.log("File selected:", e.target.files?.[0]?.name);
+          }}
         />
-        
+
         <textarea
           ref={textareaRef}
           value={input}
@@ -70,12 +76,9 @@ export function MessageInput({
           placeholder={placeholder}
           className="w-full pl-10 pr-20 py-4 min-h-[120px] text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              if (input.trim()) {
-                onSend(input);
-                setInput('');
-              }
+              handleSend();
             }
           }}
         />
@@ -90,23 +93,28 @@ export function MessageInput({
           </button>
         </div>
 
+        <div className="absolute right-3 top-3 flex items-center space-x-2">
+          <button
+            onClick={handleAISuggestion}
+            className="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+            title="AI建议"
+          >
+            <Sparkles className="h-4 w-4" />
+          </button>
+        </div>
+
         <div className="absolute right-3 bottom-4 flex items-center space-x-2">
           <div className="flex items-center text-xs text-gray-400">
             <Zap className="h-3 w-3 text-yellow-500 mr-1" />
             <span>{tokens}</span>
           </div>
           <button
-            onClick={() => {
-              if (input.trim()) {
-                onSend(input);
-                setInput('');
-              }
-            }}
+            onClick={handleSend}
             disabled={!input.trim() || disabled}
             className={`p-1.5 rounded-lg transition-colors ${
               input.trim() && !disabled
-                ? 'text-blue-600 hover:bg-blue-50'
-                : 'text-gray-300 cursor-not-allowed'
+                ? "text-blue-600 hover:bg-blue-50"
+                : "text-gray-300 cursor-not-allowed"
             }`}
           >
             <Send className="h-4 w-4" />

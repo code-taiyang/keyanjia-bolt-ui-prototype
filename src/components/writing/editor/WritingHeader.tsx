@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { ArrowLeft, FileText, Download, Book, FileIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Badge } from '../../common/Badge';
+import React, { useState } from "react";
+import { ArrowLeft, FileText, Download, FileIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Badge } from "../../common/Badge";
 
 interface WritingHeaderProps {
   title: string;
@@ -10,8 +10,7 @@ interface WritingHeaderProps {
   isModified: boolean;
   isSaving: boolean;
   lastSaved: Date | null;
-  onToggleReference: () => void;
-  isReferenceOpen: boolean;
+  onSave: () => void;
 }
 
 export function WritingHeader({
@@ -21,12 +20,11 @@ export function WritingHeader({
   isModified,
   isSaving,
   lastSaved,
-  onToggleReference,
-  isReferenceOpen
+  onSave,
 }: WritingHeaderProps) {
   const [showExportMenu, setShowExportMenu] = useState(false);
 
-  const handleExport = (format: 'pdf' | 'docx') => {
+  const handleExport = (format: "pdf" | "word") => {
     // Handle export logic
     console.log(`Exporting as ${format}...`);
     setShowExportMenu(false);
@@ -35,13 +33,13 @@ export function WritingHeader({
   return (
     <div className="h-16 bg-white border-b flex items-center justify-between px-4 shadow-sm">
       <div className="flex items-center space-x-4 flex-1">
-        <Link 
+        <Link
           to="/tools/writing"
-          className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+          className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
         >
           <ArrowLeft size={20} />
         </Link>
-        
+
         <div className="flex items-center space-x-3 flex-1">
           <input
             type="text"
@@ -73,48 +71,33 @@ export function WritingHeader({
           {wordCount} 字
         </div>
 
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={onToggleReference}
-            className={`
-              p-2 rounded-full transition-colors
-              ${isReferenceOpen 
-                ? 'text-blue-600 bg-blue-50 hover:bg-blue-100' 
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
-            `}
-            title="参考文献"
+        <div className="relative">
+          <button
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+            title="导出"
           >
-            <Book size={20} />
+            <Download size={20} />
           </button>
 
-          <div className="relative">
-            <button 
-              onClick={() => setShowExportMenu(!showExportMenu)}
-              className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
-              title="导出"
-            >
-              <Download size={20} />
-            </button>
-
-            {showExportMenu && (
-              <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border py-1 z-10">
-                <button
-                  onClick={() => handleExport('pdf')}
-                  className="w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                >
-                  <FileIcon size={16} className="text-red-500" />
-                  导出为 PDF
-                </button>
-                <button
-                  onClick={() => handleExport('docx')}
-                  className="w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                >
-                  <FileIcon size={16} className="text-blue-500" />
-                  导出为 Word
-                </button>
-              </div>
-            )}
-          </div>
+          {showExportMenu && (
+            <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border py-1 z-10">
+              <button
+                onClick={() => handleExport("pdf")}
+                className="w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+              >
+                <FileIcon size={16} className="text-red-500" />
+                导出为 PDF
+              </button>
+              <button
+                onClick={() => handleExport("word")}
+                className="w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+              >
+                <FileIcon size={16} className="text-blue-500" />
+                导出为 Word
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
