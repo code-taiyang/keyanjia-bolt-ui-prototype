@@ -14,7 +14,10 @@ import {
   Database,
   BookMarked,
   MessageSquare,
-  BarChart2
+  BarChart2,
+  TestTubes,
+  Award,
+  ClipboardList
 } from 'lucide-react';
 import { Link } from './Link';
 import { SidebarSection } from './SidebarSection';
@@ -73,6 +76,24 @@ export function Sidebar() {
       label: "科研计算",
       to: "/tools/coding",
       active: location.pathname === "/tools/coding"
+    },
+    {
+      icon: <TestTubes size={20} />,
+      label: "实验助手",
+      to: "/tools/experiment",
+      active: location.pathname === "/tools/experiment"
+    },
+    {
+      icon: <Award size={20} />,
+      label: "基金助手",
+      to: "/tools/funding",
+      active: location.pathname === "/tools/funding"
+    },
+    {
+      icon: <ClipboardList size={20} />,
+      label: "研究规划",
+      to: "/planning",
+      active: location.pathname === "/planning"
     }
   ];
 

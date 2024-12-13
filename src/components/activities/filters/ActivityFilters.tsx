@@ -32,6 +32,9 @@ export function ActivityFilters({ onSearch, onFilterChange, onSortChange }: Acti
           <option value="analysis">数据分析</option>
           <option value="algorithm">科研算法</option>
           <option value="computing">科研计算</option>
+          <option value="experiment">实验研究</option>
+          <option value="grant">基金申请</option>
+          <option value="planning">研究规划</option>
         </select>
 
         <select

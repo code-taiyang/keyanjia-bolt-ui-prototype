@@ -7,7 +7,8 @@ export type ActivityType =
   | 'grant'
   | 'algorithm'
   | 'dataset'
-  | 'visualization';
+  | 'visualization'
+  | 'planning';
 
 export type ActivityStatus = 'completed' | 'in_progress' | 'archived';
 

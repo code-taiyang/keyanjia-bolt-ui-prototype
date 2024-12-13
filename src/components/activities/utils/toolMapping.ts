@@ -9,7 +9,8 @@ import {
   Database,
   LineChart,
   Microscope,
-  Code2
+  Code2,
+  ClipboardList
 } from 'lucide-react';
 
 export interface AITool {
@@ -97,6 +98,13 @@ export const aiTools: Record<string, AITool> = {
     icon: Code2,
     description: '科研代码开发',
     color: 'text-blue-600'
+  },
+  'planning': {
+    id: 'planning',
+    name: '规划助手',
+    icon: ClipboardList,
+    description: '研究规划与管理',
+    color: 'text-violet-600'
   }
 };
 

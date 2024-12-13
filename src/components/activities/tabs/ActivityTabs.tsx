@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollText, Brain, Calculator, Code2 } from 'lucide-react';
+import { ScrollText, Brain, Calculator, Code2, TestTubes, Award, ClipboardList } from 'lucide-react';
 
 interface ActivityTabsProps {
   activeTab: string;
@@ -9,6 +9,9 @@ interface ActivityTabsProps {
     analysis: number;
     algorithm: number;
     computing: number;
+    experiment: number;
+    grant: number;
+    planning: number;
   };
 }
 
@@ -29,14 +32,32 @@ export function ActivityTabs({ activeTab, onTabChange, counts }: ActivityTabsPro
     {
       id: 'algorithm',
       label: '科研算法',
-      icon: <Code2 size={18} />,
+      icon: <Calculator size={18} />,
       count: counts.algorithm
     },
     {
       id: 'computing',
       label: '科研计算',
-      icon: <Calculator size={18} />,
+      icon: <Code2 size={18} />,
       count: counts.computing
+    },
+    {
+      id: 'experiment',
+      label: '实验研究',
+      icon: <TestTubes size={18} />,
+      count: counts.experiment
+    },
+    {
+      id: 'grant',
+      label: '基金申请',
+      icon: <Award size={18} />,
+      count: counts.grant
+    },
+    {
+      id: 'planning',
+      label: '研究规划',
+      icon: <ClipboardList size={18} />,
+      count: counts.planning
     }
   ];
 

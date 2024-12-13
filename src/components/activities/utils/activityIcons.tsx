@@ -8,7 +8,8 @@ import {
   Award,
   Calculator,
   Database,
-  LineChart
+  LineChart,
+  ClipboardList
 } from 'lucide-react';
 import { ActivityType } from '../types';
 
@@ -34,5 +35,7 @@ export function getActivityIcon(type: ActivityType) {
       return <Database className="text-orange-600" {...iconProps} />;
     case 'visualization':
       return <LineChart className="text-rose-600" {...iconProps} />;
+    case 'planning':
+      return <ClipboardList className="text-violet-600" {...iconProps} />;
   }
 }

@@ -30,20 +30,23 @@ import { AlgorithmAssistant } from "./components/algorithm/AlgorithmAssistant";
 import { AlgorithmEditor } from "./components/algorithm/editor/AlgorithmEditor";
 import { ComputingEditor } from "./components/coding/computing/ComputingEditor";
 
-// 创建一个包装组件来使用 useLocation
+import { ComputingListPage } from './pages/computing/ComputingListPage';
+import { AlgorithmListPage } from './pages/algorithm/AlgorithmListPage';
+import { NewAnalysisPage } from './pages/analysis/NewAnalysisPage';
+import { PlanningPage } from './pages/planning/PlanningPage';
+
+
 function AppLayout() {
   const location = useLocation();
-
-  // 定义不需要显示侧边栏和顶部导航的路由路径
+  
   const editorPaths = [
-    "/tools/coding/computing/editor",
-    "/tools/algorithm/editor",
-    "/writing",
-    "/analysis/editor",
+    '/tools/coding/computing/editor',
+    '/tools/algorithm/editor',
+    '/writing',
+    '/analysis/editor'
   ];
 
-  // 检查当前路径是否是编辑器页面
-  const isEditorPage = editorPaths.some((path) =>
+  const isEditorPage = editorPaths.some(path => 
     location.pathname.startsWith(path)
   );
 
@@ -63,7 +66,9 @@ function AppLayout() {
           <Route path="/tools/writing" element={<WritingAssistant />} />
           <Route path="/writing/:id" element={<WritingPage />} />
           <Route path="/literature" element={<LiteratureAIPage />} />
-          <Route path="/tools/coding" element={<CodingAssistant />} />
+          <Route path="/tools/coding" element={<ComputingListPage />} />
+          <Route path="/tools/coding/computing" element={<CodingAssistant />} />
+          {/* <Route path="/tools/coding" element={<CodingAssistant />} /> */}
           <Route
             path="/tools/coding/computing/editor"
             element={<ComputingEditor />}
@@ -71,9 +76,12 @@ function AppLayout() {
           <Route path="/tools/experiment" element={<ExperimentAssistant />} />
           <Route path="/tools/patent" element={<PatentAssistant />} />
           <Route path="/tools/funding" element={<FundAssistant />} />
-          <Route path="/tools/algorithm" element={<AlgorithmAssistant />} />
+          {/* <Route path="/tools/algorithm" element={<AlgorithmAssistant />} /> */}
+          <Route path="/tools/algorithm" element={<AlgorithmListPage />} />
+          <Route path="/tools/algorithm/assistant" element={<AlgorithmAssistant />} />
           <Route path="/tools/algorithm/editor" element={<AlgorithmEditor />} />
           <Route path="/analysis" element={<DataAnalysisPage />} />
+          <Route path="/analysis/new" element={<NewAnalysisPage />} />
           <Route path="/analysis/editor" element={<AnalysisEditorPage />} />
           <Route path="/settings" element={<SettingsLayout />}>
             <Route path="profile" element={<ProfileSettings />} />
@@ -84,6 +92,7 @@ function AppLayout() {
             <Route path="language" element={<LanguageSettings />} />
             <Route path="storage" element={<StorageSettings />} />
           </Route>
+          <Route path="/planning" element={<PlanningPage />} />
         </Routes>
       </div>
     </div>

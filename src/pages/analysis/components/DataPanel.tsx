@@ -10,13 +10,21 @@ interface DataFile {
 }
 
 interface DataPanelProps {
-  files: DataFile[];
+  files?: DataFile[];
 }
 
-export function DataPanel({ files }: DataPanelProps) {
+export function DataPanel({ files = [] }: DataPanelProps) {
   const [selectedFile, setSelectedFile] = React.useState<string | null>(
     files.length > 0 ? files[0].id : null
   );
+
+  if (files.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center text-sm text-gray-500">
+        暂无数据文件
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex">

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { RecentWritings } from './recent/RecentWritings';
-import { TeamWritings } from './recent/TeamWritings';
-import { TemplateGrid } from './templates/TemplateGrid';
 import { WritingGuide } from './guide/WritingGuide';
 
 export function WritingAssistant() {
@@ -11,6 +9,7 @@ export function WritingAssistant() {
   return (
     <div className="flex-1 overflow-auto">
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">写作助手</h1>
@@ -29,13 +28,6 @@ export function WritingAssistant() {
         {/* Recent Writings Section */}
         <div className="space-y-8">
           <RecentWritings />
-          <TeamWritings />
-        </div>
-
-        {/* Writing Templates */}
-        <div className="mt-12">
-          <h2 className="text-lg font-medium mb-6">写作模板</h2>
-          <TemplateGrid compact />
         </div>
 
         {/* Writing Guide Dialog */}
