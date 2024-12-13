@@ -1,63 +1,17 @@
 import React, { useState } from 'react';
-import { X, Search, FileText, Trash2, Upload } from 'lucide-react';
+import { Search, FileText, Trash2 } from 'lucide-react';
+import { useReferenceStore } from '../../../stores/referenceStore';
 
-interface WritingReferenceProps {
-  onClose: () => void;
-}
-
-interface Reference {
-  id: string;
-  title: string;
-  type: string;
-  size: string;
-  uploadDate: string;
-}
-
-export function WritingReference({ onClose }: WritingReferenceProps) {
+export function WritingReference() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDragging, setIsDragging] = useState(false);
-
-  const references: Reference[] = [
-    {
-      id: '1',
-      title: 'Research on Large Language Models.pdf',
-      type: 'pdf',
-      size: '2.3 MB',
-      uploadDate: '2024-03-20'
-    },
-    {
-      id: '2',
-      title: 'AI in Academic Writing.pdf',
-      type: 'pdf',
-      size: '1.8 MB',
-      uploadDate: '2024-03-15'
-    }
-  ];
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    // Handle file drop
-    const files = Array.from(e.dataTransfer.files);
-    console.log('Dropped files:', files);
-  };
+  const { references, removeReference } = useReferenceStore();
 
   const filteredReferences = references.filter(ref =>
     ref.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="w-80 border-l bg-white flex flex-col">
-      <div className="p-4 border-b flex items-center justify-between">
-        <h3 className="font-medium">参考文献</h3>
-        <button 
-          onClick={onClose}
-          className="p-1 text-gray-400 hover:text-gray-500 rounded-full hover:bg-gray-100"
-        >
-          <X size={20} />
-        </button>
-      </div>
-
+    <div className="flex-1 flex flex-col">
       <div className="p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
@@ -83,12 +37,13 @@ export function WritingReference({ onClose }: WritingReferenceProps) {
                 {ref.title}
               </h4>
               <div className="mt-1 flex items-center text-xs text-gray-500">
-                <span>{ref.uploadDate}</span>
+                <span>{ref.uploadTime}</span>
                 <span className="mx-1">·</span>
                 <span>{ref.size}</span>
               </div>
             </div>
             <button 
+              onClick={() => removeReference(ref.id)}
               className="ml-2 p-1 text-gray-400 hover:text-red-600 rounded-full opacity-0 group-hover:opacity-100"
               title="删除"
             >
@@ -96,33 +51,6 @@ export function WritingReference({ onClose }: WritingReferenceProps) {
             </button>
           </div>
         ))}
-      </div>
-
-      <div className="p-4 border-t">
-        <div
-          onDrop={handleDrop}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsDragging(true);
-          }}
-          onDragLeave={(e) => {
-            e.preventDefault();
-            setIsDragging(false);
-          }}
-          className={`
-            border-2 border-dashed rounded-lg p-4 text-center
-            ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}
-          `}
-        >
-          <Upload className="h-5 w-5 text-gray-400 mx-auto mb-2" />
-          <div className="text-sm text-gray-500">
-            拖拽文件或
-            <label className="text-blue-600 hover:text-blue-700 cursor-pointer mx-1">
-              点击上传
-              <input type="file" className="hidden" accept=".pdf,.doc,.docx" multiple />
-            </label>
-          </div>
-        </div>
       </div>
     </div>
   );
